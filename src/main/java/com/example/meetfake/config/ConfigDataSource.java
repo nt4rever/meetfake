@@ -15,10 +15,10 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 public class ConfigDataSource {
-	private String url = "jdbc:mysql://n20ugxjbjyo2yiy5:lowuhb620xx3m1fg@dcrhg4kh56j13bnu.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/hai24bipahfkg8fz";
-	private String user = "n20ugxjbjyo2yiy5";
-	private String password = "lowuhb620xx3m1fg";
-	private String driverClass = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/utf9zq5vfcv2q8sd";
+	private String user = "pumk3tz4esvc5m6a";
+	private String password = "y3ieue1e1ju01rpi";
+	private String driverClass = "com.mysql.cj.jdbc.Driver";
 
 	@Bean(name = "dataSource")
 	public DataSource dataSource() {
