@@ -42,7 +42,7 @@ const overlayContainer = document.querySelector('#overlay')
 overlayContainer.style.visibility = 'hidden';
 
 //establish socket
-const socket = new WebSocket("ws://" + window.location.host + "/signal");
+const socket = new WebSocket("wss://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
