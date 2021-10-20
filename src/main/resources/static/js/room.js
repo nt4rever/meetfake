@@ -25,7 +25,8 @@ mymuteicon.style.visibility = 'hidden';
 let myvideooff = document.querySelector("#myvideooff");
 myvideooff.style.visibility = 'hidden';
 
-const configuration = {iceServers: [{urls: "stun:stun.stunprotocol.org"}]}
+const configuration = {iceServers: [{urls: "stun:stun2.l.google.com:19302"}]}
+//stun:stun.stunprotocol.org
 const mediaConstraints = {video: true, audio: true};
 
 let connections = {};
@@ -41,8 +42,37 @@ let peerConnection;
 const overlayContainer = document.querySelector('#overlay')
 overlayContainer.style.visibility = 'hidden';
 
+function CopyClassText() {
+
+    var textToCopy = document.querySelector('.roomcode');
+    var currentRange;
+    if (document.getSelection().rangeCount > 0) {
+        currentRange = document.getSelection().getRangeAt(0);
+        window.getSelection().removeRange(currentRange);
+    }
+    else {
+        currentRange = false;
+    }
+
+    var CopyRange = document.createRange();
+    CopyRange.selectNode(textToCopy);
+    window.getSelection().addRange(CopyRange);
+    document.execCommand("copy");
+
+    window.getSelection().removeRange(CopyRange);
+
+    if (currentRange) {
+        window.getSelection().addRange(currentRange);
+    }
+
+    document.querySelector(".copycode-button").textContent = "Copied!"
+    setTimeout(()=>{
+        document.querySelector(".copycode-button").textContent = "Copy Code";
+    }, 5000);
+}
+
 //establish socket
-const socket = new WebSocket("wss://" + window.location.host + "/signal");
+const socket = new WebSocket("ws://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
@@ -70,6 +100,7 @@ socket.onclose = function (message) {
 socket.onerror = function (message) {
     handleErrorMessage("Error: " + message);
 };
+
 
 function startCall() {
     navigator.mediaDevices.getUserMedia(mediaConstraints)
@@ -373,7 +404,7 @@ videoButt.addEventListener('click', () => {
         }
         videoButt.innerHTML = `<i class="fas fa-video"></i>`;
         videoAllowed = 1;
-        videoButt.style.backgroundColor = "#4ECCA3";
+        videoButt.style.backgroundColor = "#1a73e8";
         if (mystream) {
             mystream.getTracks().forEach(track => {
                 if (track.kind === 'video')
@@ -419,7 +450,7 @@ audioButt.addEventListener('click', () => {
         }
         audioButt.innerHTML = `<i class="fas fa-microphone"></i>`;
         audioAllowed = 1;
-        audioButt.style.backgroundColor = "#4ECCA3";
+        audioButt.style.backgroundColor = "#1a73e8";
         if (mystream) {
             mystream.getTracks().forEach(track => {
                 if (track.kind === 'audio')
