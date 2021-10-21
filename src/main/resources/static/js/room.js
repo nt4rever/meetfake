@@ -26,9 +26,9 @@ let myvideooff = document.querySelector("#myvideooff");
 myvideooff.style.visibility = 'hidden';
 
 const configuration = {iceServers: [{
-    url: 'turn:numb.viagenie.ca',
-    credential: 'muazkh',
-    username: 'webrtc@live.com'
+    url: 'stun:numb.viagenie.ca',
+    username: 'levantanald@gmail.com',
+    password: 'abcd1234@@'
 }]}
 //stun:stun.stunprotocol.org
 const mediaConstraints = {video: true, audio: true};
@@ -43,8 +43,8 @@ username = document.getElementById("myname").innerText
 let peerConnection;
 
 
-const overlayContainer = document.querySelector('#overlay')
-overlayContainer.style.visibility = 'hidden';
+// const overlayContainer = document.querySelector('#overlay')
+// overlayContainer.style.visibility = 'hidden';
 
 function CopyClassText() {
 
