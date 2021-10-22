@@ -1,4 +1,4 @@
-const myvideo = document.querySelector("#vd1");
+const myVideo = document.querySelector("#vd1");
 const roomId = document.querySelector(".roomcode").innerText;
 let username;
 const chatRoom = document.querySelector('.chat-cont');
@@ -25,12 +25,10 @@ mymuteicon.style.visibility = 'hidden';
 let myvideooff = document.querySelector("#myvideooff");
 myvideooff.style.visibility = 'hidden';
 
-const configuration = {iceServers: [{
-    url: 'stun:numb.viagenie.ca',
-    username: 'levantanald@gmail.com',
-    password: 'abcd1234@@'
-}]}
-//stun:stun.stunprotocol.org
+const configuration = {
+    iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
+}
+
 const mediaConstraints = {video: true, audio: true};
 
 let connections = {};
@@ -47,17 +45,14 @@ let peerConnection;
 // overlayContainer.style.visibility = 'hidden';
 
 function CopyClassText() {
-
     var textToCopy = document.querySelector('.roomcode');
     var currentRange;
     if (document.getSelection().rangeCount > 0) {
         currentRange = document.getSelection().getRangeAt(0);
         window.getSelection().removeRange(currentRange);
-    }
-    else {
+    } else {
         currentRange = false;
     }
-
     var CopyRange = document.createRange();
     CopyRange.selectNode(textToCopy);
     window.getSelection().addRange(CopyRange);
@@ -70,13 +65,13 @@ function CopyClassText() {
     }
 
     document.querySelector(".copycode-button").textContent = "Copied!"
-    setTimeout(()=>{
+    setTimeout(() => {
         document.querySelector(".copycode-button").textContent = "Copy Code";
     }, 5000);
 }
 
 //establish socket
-const socket = new WebSocket("wss://" + window.location.host + "/signal");
+const socket = new WebSocket("ws://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
@@ -84,14 +79,10 @@ socket.onopen = function () {
     sendToServer({
         from: username,
         type: 'join',
-        data: roomId,
-        candidate: null,
-        sid: null,
-        offer: null,
-        micinf: null,
-        vidinf: null,
-        cname: null,
-        answer: null,
+        data: {
+            roomId: roomId,
+            time: getTime(),
+        },
     });
 };
 
@@ -105,12 +96,11 @@ socket.onerror = function (message) {
     handleErrorMessage("Error: " + message);
 };
 
-
 function startCall() {
     navigator.mediaDevices.getUserMedia(mediaConstraints)
         .then(localStream => {
-            myvideo.srcObject = localStream;
-            myvideo.muted = true;
+            myVideo.srcObject = localStream;
+            myVideo.muted = true;
             localStream.getTracks().forEach(track => {
                 for (let key in connections) {
                     connections[key].addTrack(track, localStream);
@@ -123,7 +113,7 @@ function startCall() {
 
         })
         .catch(handleGetUserMediaError);
-}
+};
 
 async function joinHandle(conc, cnames, micinfo, videoinfo) {
     if (cnames)
@@ -133,24 +123,27 @@ async function joinHandle(conc, cnames, micinfo, videoinfo) {
     if (videoinfo)
         videoInfo = videoinfo;
     console.log(cName);
-    if (conc) {
+    if (conc.length > 0) {
         await conc.forEach(sid => {
             connections[sid] = new RTCPeerConnection(configuration);
-
             connections[sid].onicecandidate = function (event) {
                 if (event.candidate) {
                     console.log('icecandidate fired');
                     sendToServer({
+                        from: username,
                         type: 'ice',
-                        candidate: event.candidate,
-                        sid: sid,
-                    })
-                    // socket.emit('new icecandidate', event.candidate, sid);
+                        data: {
+                            candidate: {
+                                sdpMLineIndex: event.candidate.sdpMLineIndex,
+                                candidate: event.candidate.candidate,
+                            },
+                            sid: sid,
+                        },
+                    });
                 }
             };
 
             connections[sid].ontrack = function (event) {
-
                 if (!document.getElementById(sid)) {
                     console.log('track event fired')
                     let vidCont = document.createElement('div');
@@ -209,12 +202,13 @@ async function joinHandle(conc, cnames, micinfo, videoinfo) {
                     })
                     .then(function () {
                         sendToServer({
+                            from: username,
                             type: 'offer',
-                            offer: connections[sid].localDescription,
-                            sid: sid,
-                        })
-                        // socket.emit('video-offer', connections[sid].localDescription, sid);
-
+                            data: {
+                                offer: connections[sid].localDescription,
+                                sid: sid,
+                            },
+                        });
                     })
                     .catch(reportError);
             };
@@ -226,8 +220,8 @@ async function joinHandle(conc, cnames, micinfo, videoinfo) {
         console.log('waiting for someone to join');
         navigator.mediaDevices.getUserMedia(mediaConstraints)
             .then(localStream => {
-                myvideo.srcObject = localStream;
-                myvideo.muted = true;
+                myVideo.srcObject = localStream;
+                myVideo.muted = true;
                 mystream = localStream;
             })
             .catch(handleGetUserMediaError);
@@ -246,10 +240,14 @@ function handleVideoOffer(offer, sid, cname, micinf, vidinf) {
             sendToServer({
                 from: username,
                 type: 'ice',
-                candidate: event.candidate,
-                sid: sid,
-            })
-            // socket.emit('new icecandidate', event.candidate, sid);
+                data: {
+                    candidate: {
+                        sdpMLineIndex: event.candidate.sdpMLineIndex,
+                        candidate: event.candidate.candidate,
+                    },
+                    sid: sid,
+                },
+            });
         }
     };
     connections[sid].ontrack = function (event) {
@@ -315,10 +313,11 @@ function handleVideoOffer(offer, sid, cname, micinf, vidinf) {
                 sendToServer({
                     from: username,
                     type: 'offer',
-                    data: connections[sid].localDescription,
-                    sid: sid,
-                })
-                // socket.emit('video-offer', connections[sid].localDescription, sid);
+                    data: {
+                        offer: connections[sid].localDescription,
+                        sid: sid,
+                    },
+                });
 
             })
             .catch(reportError);
@@ -357,10 +356,11 @@ function handleVideoOffer(offer, sid, cname, micinf, vidinf) {
             sendToServer({
                 from: username,
                 type: 'answer',
-                answer: connections[sid].localDescription,
-                sid: sid,
-            })
-            // socket.emit('video-answer', connections[sid].localDescription, sid);
+                data: {
+                    answer: connections[sid].localDescription,
+                    sid: sid,
+                },
+            });
         })
         .catch(handleGetUserMediaError);
 }
@@ -398,10 +398,12 @@ videoButt.addEventListener('click', () => {
 
         myvideooff.style.visibility = 'visible';
         sendToServer({
+            from: username,
             type: 'action',
-            data: 'videooff',
-        })
-        // socket.emit('action', 'videooff');
+            data: {
+                action: 'videooff',
+            },
+        });
     } else {
         for (let key in videoTrackSent) {
             videoTrackSent[key].enabled = true;
@@ -419,13 +421,14 @@ videoButt.addEventListener('click', () => {
 
         myvideooff.style.visibility = 'hidden';
         sendToServer({
+            from: username,
             type: 'action',
-            data: 'videoon',
-        })
-        // socket.emit('action', 'videoon');
+            data: {
+                action: 'videoon',
+            },
+        });
     }
-})
-
+});
 
 audioButt.addEventListener('click', () => {
     if (audioAllowed) {
@@ -441,13 +444,16 @@ audioButt.addEventListener('click', () => {
                     track.enabled = false;
             })
         }
+        ;
 
         mymuteicon.style.visibility = 'visible';
         sendToServer({
+            from: username,
             type: 'action',
-            data: 'mute',
-        })
-        // socket.emit('action', 'mute');
+            data: {
+                action: 'mute',
+            },
+        });
     } else {
         for (let key in audioTrackSent) {
             audioTrackSent[key].enabled = true;
@@ -464,19 +470,23 @@ audioButt.addEventListener('click', () => {
 
         mymuteicon.style.visibility = 'hidden';
         sendToServer({
+            from: username,
             type: 'action',
-            data: 'unmute',
-        })
-        // socket.emit('action', 'unmute');
+            data: {
+                action: 'unmute',
+            },
+        });
     }
 })
 
 //receive message from server
 socket.onmessage = async function (msg) {
     let message = JSON.parse(msg.data);
+    log(message);
+    let dataBody = JSON.parse(message.data);
     switch (message.type) {
         case "text":
-            log('Text message from ' + message.from + ' received: ' + message.data);
+            log('Text message received')
             chatRoom.scrollTop = chatRoom.scrollHeight;
             chatRoom.innerHTML += `<div class="message">
                     <div class="info">
@@ -484,35 +494,33 @@ socket.onmessage = async function (msg) {
                         <div class="time">${getTime()}</div>
                     </div>
                     <div class="content">
-                        ${message.data}
+                        ${dataBody.message}
                     </div>
                 </div>`
             break;
         case "offer":
             log('Signal OFFER received');
-            log(message)
-            handleVideoOffer(message.offer, message.sid, message.cname, message.micinf, message.vidinf)
+            handleVideoOffer(dataBody.offer, dataBody.sid, dataBody.cname, dataBody.micinf, dataBody.vidinf)
             break;
         case "answer":
             log('Signal ANSWER received');
-            handleVideoAnswer(message.answer, message.sid)
+            handleVideoAnswer(dataBody.answer, dataBody.sid)
             break;
         case "ice":
             log('Signal ICE Candidate received');
-            handleNewIceCandidate(message.candidate, message.sid)
+            handleNewIceCandidate(dataBody.candidate, dataBody.sid)
             break;
         case "join":
-            log("join #" + message.data);
-            log(message)
-            let conc = JSON.parse(message.conc)
-            let socketName = JSON.parse(message.data)
-            let micInfoP = JSON.parse(message.micinf)
-            let videoInfoP = JSON.parse(message.vidinf)
+            log("join #" + dataBody);
+            let conc = dataBody.conc
+            let socketName = dataBody.socketName
+            let micInfoP = dataBody.micinf
+            let videoInfoP = dataBody.vidinf
             await joinHandle(conc, socketName, micInfoP, videoInfoP)
             break;
         case "action":
-            let msg = message.data;
-            let sid = message.sid;
+            let msg = dataBody.action;
+            let sid = dataBody.sid;
             if (msg == 'mute') {
                 console.log(sid + ' muted themself');
                 document.querySelector(`#mute${sid}`).style.visibility = 'visible';
@@ -543,7 +551,7 @@ socket.onmessage = async function (msg) {
                         ${message.from} leave!
                     </div>
                 </div>`
-            let sidLeave = message.data;
+            let sidLeave = dataBody.sid;
             if (document.getElementById(sidLeave)) {
                 document.getElementById(sidLeave).remove();
             }
@@ -551,8 +559,7 @@ socket.onmessage = async function (msg) {
             break;
 
         case "user count":
-            let sizeUser = message.data;
-            log("user count" + sizeUser)
+            let sizeUser = dataBody.userCount;
             if (sizeUser > 1) {
                 videoContainer.className = 'video-cont';
             } else {
@@ -575,7 +582,10 @@ sendButton.addEventListener('click', () => {
     sendToServer({
         from: username,
         type: 'text',
-        data: msg,
+        data: {
+            message: msg,
+            time: getTime(),
+        },
     });
     chatRoom.scrollTop = chatRoom.scrollHeight;
     chatRoom.innerHTML += `<div class="message">
@@ -586,8 +596,7 @@ sendButton.addEventListener('click', () => {
                     <div class="content">
                         ${msg}
                     </div>
-                </div>`
-
+                </div>`;
 });
 
 //event enter keyup on message field
@@ -598,14 +607,13 @@ messageField.addEventListener("keyup", function (event) {
     }
 });
 
-//------------------util function------------------------------
 // use JSON format to send WebSocket message
 function sendToServer(msg) {
     let msgJSON = JSON.stringify(msg);
     socket.send(msgJSON);
 }
 
-//print log
+//------------------util function------------------------------
 function log(message) {
     console.log(message);
 }
@@ -635,7 +643,6 @@ function handleGetUserMediaError(e) {
 
 }
 
-//get time js
 function getTime() {
     return new Date().toLocaleTimeString();
 }

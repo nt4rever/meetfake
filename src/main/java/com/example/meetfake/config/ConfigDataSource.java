@@ -15,14 +15,17 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 public class ConfigDataSource {
-	private String url = "jdbc:mysql://nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/utf9zq5vfcv2q8sd";
-	private String user = "pumk3tz4esvc5m6a";
-	private String password = "y3ieue1e1ju01rpi";
+//	private String url = "jdbc:mysql://nnsgluut5mye50or.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/utf9zq5vfcv2q8sd";
+//	private String user = "pumk3tz4esvc5m6a";
+//	private String password = "y3ieue1e1ju01rpi";
 	
-	
-//	private String url = "jdbc:mysql://localhost:3306/meet";
+//	private String url = "jdbc:mysql://containers-us-west-20.railway.app:7184/railway";
 //	private String user = "root";
-//	private String password = "";
+//	private String password = "itrHTS5aZPArmIKEuYsY";
+	
+	private String url = "jdbc:mysql://localhost:3306/meet";
+	private String user = "root";
+	private String password = "";
 	
 	
 	private String driverClass = "com.mysql.cj.jdbc.Driver";

@@ -55,8 +55,6 @@ public class RoomController {
         if (username == null || username.isEmpty()) {
             return new ModelAndView("redirect:/sign-in");
         }
-//        model.addAttribute("username", username);
-//        model.addAttribute("roomId", roomId);
         return this.mainService.joinRoom(roomId, username);
     }
 

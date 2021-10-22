@@ -31,8 +31,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public ModelAndView joinRoom(String roomId, String username) {
         Optional<Room> room = roomService.findRoomByStringId(roomId);
-        if (room.isEmpty()){
-//            roomService.addRoom(new Room(roomId));
+        if (room.isEmpty()) {
             return new ModelAndView("redirect:/");
         }
         final ModelAndView modelAndView = new ModelAndView("room");
@@ -41,6 +40,4 @@ public class MainServiceImpl implements MainService {
         modelAndView.addObject("username", username);
         return modelAndView;
     }
-
-
 }
