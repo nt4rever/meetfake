@@ -3,6 +3,7 @@ package com.example.meetfake.socket;
 import com.example.meetfake.domain.Room;
 import com.example.meetfake.domain.RoomService;
 import com.example.meetfake.domain.WebSocketMessage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -42,6 +43,12 @@ public class SignalHandler extends TextWebSocketHandler {
     // leave room data message
     private static final String MSG_TYPE_LEAVE = "leave";
 
+    private static final String MSG_TYPE_DRAW = "draw";
+    private static final String MSG_TYPE_GET_CANVAS = "getCanvas";
+    private static final String MSG_TYPE_CLEAR_BOARD = "clearBoard";
+    private static final String MSG_TYPE_STORE_CANVAS = "store canvas";
+
+
     @Override
     public void afterConnectionEstablished(final WebSocketSession session) {
         // webSocket has been opened, send a message to the client
@@ -50,32 +57,35 @@ public class SignalHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) {
+    public void afterConnectionClosed(final WebSocketSession session, final CloseStatus status) throws JsonProcessingException {
         System.out.println("Remove client " + session.getId());
         Room rm = sessionIdToRoomMap.get(session.getId());
         if (rm != null) {
             Map<WebSocketSession, String> clients = roomService.getClients(rm);
             String username = clients.get(session);
-            for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
-                if (!client.getKey().getId().equals(session.getId())) {
-                    JSONObject objectLeave = new JSONObject();
-                    objectLeave.put("sid", session.getId());
-                    sendMessage(client.getKey(), new WebSocketMessage(
-                            username,
-                            "leave",
-                            objectLeave.toString()
-                    ));
-
-                    JSONObject objectCount = new JSONObject();
-                    objectCount.put("userCount", String.valueOf(clients.size() - 1));
-                    sendMessage(client.getKey(), new WebSocketMessage(
-                            username,
-                            "user count",
-                            objectCount.toString()
-                    ));
-                }
-            }
             roomService.removeClientByKey(rm, session);
+            Map<String, String> socketName = new HashMap<>();
+            for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+                socketName.put(client.getKey().getId(), client.getValue());
+            }
+            for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+                JSONObject objectLeave = new JSONObject();
+                objectLeave.put("sid", session.getId());
+                sendMessage(client.getKey(), new WebSocketMessage(
+                        username,
+                        "leave",
+                        objectLeave.toString()
+                ));
+
+                JSONObject objectCount = new JSONObject();
+                objectCount.put("userCount", String.valueOf(clients.size()));
+                objectCount.put("listAttendies", objectMapper.writeValueAsString(socketName));
+                sendMessage(client.getKey(), new WebSocketMessage(
+                        username,
+                        "user count",
+                        objectCount.toString()
+                ));
+            }
         }
         sessionIdToRoomMap.remove(session.getId());
     }
@@ -203,6 +213,7 @@ public class SignalHandler extends TextWebSocketHandler {
                 for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
                     JSONObject objectCount = new JSONObject();
                     objectCount.put("userCount", String.valueOf(clients.size()));
+                    objectCount.put("listAttendies", objectMapper.writeValueAsString(socketName));
                     sendMessage(client.getKey(), new WebSocketMessage(
                             username,
                             "user count",
@@ -243,6 +254,43 @@ public class SignalHandler extends TextWebSocketHandler {
                                     username, "action", objectAction.toString()
                             ));
                         }
+                    }
+                }
+                break;
+
+            case MSG_TYPE_GET_CANVAS:
+                if (rm != null) {
+                    if (roomService.getBoard(rm) != null) {
+                        JSONObject objectBoard = new JSONObject();
+                        objectBoard.put("url", roomService.getBoard(rm));
+                        sendMessage(session, new WebSocketMessage(
+                                username, "getCanvas", objectBoard.toString()
+                        ));
+                    }
+                }
+                break;
+
+            case MSG_TYPE_STORE_CANVAS:
+                if (rm != null)
+                    roomService.setBoard(rm, (String) dataBody.get("url"));
+                break;
+
+            case MSG_TYPE_CLEAR_BOARD:
+                if (rm != null) {
+                    clients = roomService.getClients(rm);
+                    for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+                        if (client.getKey().equals(session) == false)
+                            sendMessage(client.getKey(), new WebSocketMessage(username, "clearBoard", null));
+                    }
+                }
+                break;
+
+            case MSG_TYPE_DRAW:
+                if (rm != null) {
+                    clients = roomService.getClients(rm);
+                    for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+                        if (client.getKey().equals(session) == false)
+                            sendMessage(client.getKey(), new WebSocketMessage(username, "draw", dataBody.toString()));
                     }
                 }
                 break;

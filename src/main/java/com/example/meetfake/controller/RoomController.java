@@ -50,7 +50,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public ModelAndView joinRoom(@PathVariable("roomId") final String roomId, Model model, HttpServletRequest request) {
+    public ModelAndView joinRoom(@PathVariable("roomId") final String roomId, HttpServletRequest request) {
         String username = (String) request.getSession().getAttribute("fullname");
         if (username == null || username.isEmpty()) {
             return new ModelAndView("redirect:/sign-in");

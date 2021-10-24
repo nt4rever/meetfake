@@ -52,6 +52,14 @@ public class RoomService {
         return room.getClients().put(session, name);
     }
 
+    public void setBoard(Room room, String url) {
+        room.setBoard(url);
+    }
+
+    public String getBoard(Room room) {
+        return room.getBoard();
+    }
+
     public String removeClientByKey(final Room room, final WebSocketSession name) {
         return room.getClients().remove(name);
     }

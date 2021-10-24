@@ -13,6 +13,7 @@ public class Room {
     private final Map<WebSocketSession, String> clients = new HashMap<>();
     private final Map<WebSocketSession, String> micSocket = new HashMap<>();
     private final Map<WebSocketSession, String> videoSocket = new HashMap<>();
+    private String board;
 
     public Room(String id) {
         this.id = id;
@@ -20,6 +21,14 @@ public class Room {
 
     public String getId() {
         return id;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
     }
 
     public Map<WebSocketSession, String> getClients() {
