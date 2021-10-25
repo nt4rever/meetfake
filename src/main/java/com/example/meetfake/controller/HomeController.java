@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,13 +47,16 @@ public class HomeController {
 		UserExample userExample = new UserExample();
 		userExample.createCriteria().andEmailEqualTo(email);
 		List<User> listUser = userMapper.selectByExample(userExample);
-		if (listUser.size() > 0)
-			if (listUser.get(0).getPassword().equals(password)) {
+		if (listUser.size() > 0) {
+			BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+			String ps = listUser.get(0).getPassword();
+			if (bc.matches(password, ps)) {
 				User user = listUser.get(0);
 				request.getSession().setAttribute("userId", user.getId().toString());
 				request.getSession().setAttribute("fullname", user.getFullname());
 				return "redirect:/";
 			}
+		}
 		return "redirect:/sign-in";
 	}
 
@@ -67,7 +71,7 @@ public class HomeController {
 
 	@PostMapping("/sign-up")
 	public String doSignUp(@RequestParam() String fullname, String password, String email) {
-		//check email existence
+		// check email existence
 		UserExample userExample = new UserExample();
 		userExample.createCriteria().andEmailEqualTo(email);
 		List<User> listUser = userMapper.selectByExample(userExample);
@@ -76,7 +80,8 @@ public class HomeController {
 		User newUser = new User();
 		newUser.setEmail(email);
 		newUser.setFullname(fullname);
-		newUser.setPassword(password);
+		BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+		newUser.setPassword(bc.encode(password));
 		userMapper.insert(newUser);
 		return "redirect:/sign-in";
 	}
@@ -86,6 +91,5 @@ public class HomeController {
 		request.getSession().invalidate();
 		return "redirect:/";
 	}
-
 
 }

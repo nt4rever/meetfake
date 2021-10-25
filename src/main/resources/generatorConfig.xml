@@ -8,9 +8,9 @@
 
   <context id="DB2Tables" targetRuntime="MyBatis3">
     <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-        connectionURL="jdbc:mysql://containers-us-west-20.railway.app:7184/railway"
+        connectionURL="jdbc:mysql://localhost:3306/meet"
         userId="root"
-        password="itrHTS5aZPArmIKEuYsY">
+        password="">
     </jdbcConnection>
 
     <javaTypeResolver >
@@ -33,6 +33,9 @@
 
     </table>
     <table tableName="tbl_room" domainObjectName="Room" >
+
+    </table>
+    <table tableName="tbl_room_detail" domainObjectName="RoomDetail" >
 
     </table>
 

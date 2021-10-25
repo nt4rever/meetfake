@@ -68,7 +68,7 @@ joinBut.addEventListener('click', (e) => {
         codeCont.classList.add('roomcode-error');
         return;
     }
-    const code = codeCont.value;
+    const code = codeCont.value.trim();
     location.href = `/join-room?room=${code}`;
 })
 
