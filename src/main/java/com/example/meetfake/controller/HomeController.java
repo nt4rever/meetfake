@@ -1,16 +1,14 @@
 package com.example.meetfake.controller;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.meetfake.mapper.UserMapper;
 import com.example.meetfake.model.User;
@@ -18,8 +16,9 @@ import com.example.meetfake.model.UserExample;
 
 @Controller
 public class HomeController {
+
 	@Autowired
-	UserMapper userMapper;
+	UserMapper mapper;
 
 	@GetMapping("/")
 	public String index(HttpServletRequest request, Model model) {
@@ -33,63 +32,35 @@ public class HomeController {
 		return "index";
 	}
 
-	@GetMapping("/sign-in")
-	public String signIn(HttpServletRequest request) {
+	@GetMapping("/dashboard")
+	public String dashboard(HttpServletRequest request) {
 		String id = (String) request.getSession().getAttribute("userId");
-		if (id != null)
-			if (!id.isEmpty())
-				return "redirect:/";
-		return "sign-in";
-	}
-
-	@PostMapping("/sign-in")
-	public String doSignIn(HttpServletRequest request, @RequestParam() String password, String email) {
+		if (id == null || id.isEmpty()) {
+			return "redirect:/sign-in";
+		}
 		UserExample userExample = new UserExample();
-		userExample.createCriteria().andEmailEqualTo(email);
-		List<User> listUser = userMapper.selectByExample(userExample);
+		userExample.createCriteria().andIdEqualTo(Long.parseLong(id));
+		List<User> listUser = mapper.selectByExample(userExample);
 		if (listUser.size() > 0) {
-			BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-			String ps = listUser.get(0).getPassword();
-			if (bc.matches(password, ps)) {
-				User user = listUser.get(0);
-				request.getSession().setAttribute("userId", user.getId().toString());
-				request.getSession().setAttribute("fullname", user.getFullname());
-				return "redirect:/";
-			}
+			User user = listUser.get(0);
+			String token = getToken();
+			user.setToken(token);
+			mapper.updateByPrimaryKey(user);
+			return "redirect:https://meetdashboard.up.railway.app/api/login?id=" + user.getId() + "&token=" + token;
 		}
 		return "redirect:/sign-in";
 	}
 
-	@GetMapping("/sign-up")
-	public String signUp(HttpServletRequest request) {
-		String id = (String) request.getSession().getAttribute("userId");
-		if (id != null)
-			if (!id.isEmpty())
-				return "redirect:/";
-		return "sign-up";
-	}
-
-	@PostMapping("/sign-up")
-	public String doSignUp(@RequestParam() String fullname, String password, String email) {
-		// check email existence
-		UserExample userExample = new UserExample();
-		userExample.createCriteria().andEmailEqualTo(email);
-		List<User> listUser = userMapper.selectByExample(userExample);
-		if (listUser.size() > 0)
-			return "redirect:/sign-up";
-		User newUser = new User();
-		newUser.setEmail(email);
-		newUser.setFullname(fullname);
-		BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
-		newUser.setPassword(bc.encode(password));
-		userMapper.insert(newUser);
-		return "redirect:/sign-in";
-	}
-
-	@GetMapping("/logout")
-	public String logout(HttpServletRequest request) {
-		request.getSession().invalidate();
-		return "redirect:/";
+	private String getToken() {
+		String SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890";
+		StringBuilder salt = new StringBuilder();
+		Random rnd = new Random();
+		while (salt.length() < 30) { // length of the random string.
+			int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+			salt.append(SALTCHARS.charAt(index));
+		}
+		String saltStr = salt.toString();
+		return saltStr;
 	}
 
 }

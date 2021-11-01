@@ -6,38 +6,43 @@
 <generatorConfiguration>
 
 
-  <context id="DB2Tables" targetRuntime="MyBatis3">
-    <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-        connectionURL="jdbc:mysql://localhost:3306/meet"
-        userId="root"
-        password="">
-    </jdbcConnection>
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/meet" userId="root"
+			password="">
+		</jdbcConnection>
 
-    <javaTypeResolver >
-      <property name="forceBigDecimals" value="false" />
-    </javaTypeResolver>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
 
-    <javaModelGenerator targetPackage="com.example.meetfake.model" targetProject="MeetFake">
-    
-    </javaModelGenerator>
+		<javaModelGenerator
+			targetPackage="com.example.meetfake.model" targetProject="MeetFake">
 
-    <sqlMapGenerator targetPackage="com.example.meetfake.mapper.sql"  targetProject="MeetFake\src\main\resources">
-   
-    </sqlMapGenerator>
+		</javaModelGenerator>
 
-    <javaClientGenerator type="XMLMAPPER" targetPackage="com.example.meetfake.mapper"  targetProject="MeetFake">
- 
-    </javaClientGenerator>
+		<sqlMapGenerator
+			targetPackage="com.example.meetfake.mapper.sql"
+			targetProject="MeetFake\src\main\resources">
 
-    <table tableName="tbl_user" domainObjectName="User" >
+		</sqlMapGenerator>
 
-    </table>
-    <table tableName="tbl_room" domainObjectName="Room" >
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.example.meetfake.mapper" targetProject="MeetFake">
 
-    </table>
-    <table tableName="tbl_room_detail" domainObjectName="RoomDetail" >
+		</javaClientGenerator>
 
-    </table>
+		<table tableName="tbl_user" domainObjectName="User">
 
-  </context>
+		</table>
+		<table tableName="tbl_room" domainObjectName="Room">
+
+		</table>
+		<table tableName="tbl_room_detail" domainObjectName="RoomDetail">
+
+		</table>
+		<table tableName="tbl_tracking" domainObjectName="Tracking">
+
+		</table>
+	</context>
 </generatorConfiguration>

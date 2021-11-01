@@ -22,10 +22,6 @@ public class ConfigDataSource {
 //	private String url = "jdbc:mysql://containers-us-west-20.railway.app:7184/railway";
 //	private String user = "root";
 //	private String password = "itrHTS5aZPArmIKEuYsY";
-
-//	private String url = "jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6446393";
-//	private String user = "sql6446393";
-//	private String password = "JfuxEUmIHy";
 	
 	 private String url = "jdbc:mysql://localhost:3306/meet";
 	 private String user = "root";

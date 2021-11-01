@@ -12,8 +12,12 @@
 </head>
 
 <body>
-<navbar>
+<navbar style="display:flex">
     <div class="logo" th:text="'Welcome back '+${fullname}"></div>
+    <div style="font-size: 28px;
+    font-weight: bold;
+    margin-left: 27%;
+    margin-top: 32px;"><a th:href="@{/dashboard}" target="_blank" style="color: #3498dbb8;">Dashboard</a></div>
 </navbar>
 <div class="main">
     <div class="create-join">

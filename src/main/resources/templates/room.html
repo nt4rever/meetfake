@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title th:text="'MeetFake - ' +${roomId}"></title>
+    <title th:text="'MeetFake - ' +${title}"></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/main/css/style.css}">
@@ -67,7 +67,7 @@
 
             </div>
             <div class="copycode-cont">
-                <div class="roomcode" th:text="${roomId}"></div>
+                <div class="roomcode" th:text="${roomCode}"></div>
                 <button class="copycode-button" onclick="CopyClassText()">Copy Code</button>
             </div>
         </div>
@@ -94,6 +94,11 @@
         </div>
     </div>
 </div>
+<input type="hidden" name="roomId" th:value="${roomId}">
+<input type="hidden" name="userId" th:value="${userId}">
+<input type="hidden" name="auth" th:value="${auth}">
+<input type="hidden" name="ip" th:value="${ip}">
+<input type="hidden" name="username" th:value="${username}">
 <script th:src="@{/main/js/room.js}"></script>
 <script th:src="@{/main/js/action.js}"></script>
 </body>

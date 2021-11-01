@@ -47,6 +47,10 @@ public class RoomService {
     public Map<WebSocketSession, String> getMicSocket(final Room room) {
         return room.getMicSocket();
     }
+    
+    public Map<WebSocketSession, Object> getInfo(final Room room) {
+        return room.getInfo();
+    }
 
     public String addClient(final Room room, final String name, final WebSocketSession session) {
         return room.getClients().put(session, name);

@@ -1,14 +1,14 @@
 package com.example.meetfake.controller;
 
-import java.util.List;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.example.meetfake.service.MainService;
+import com.example.meetfake.util.HttpUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +17,6 @@ import com.example.meetfake.mapper.RoomDetailMapper;
 import com.example.meetfake.mapper.RoomMapper;
 import com.example.meetfake.mapper.UserMapper;
 import com.example.meetfake.model.Room;
-import com.example.meetfake.model.RoomDetail;
-import com.example.meetfake.model.RoomDetailExample;
-import com.example.meetfake.model.RoomExample;
-import com.example.meetfake.model.User;
-
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -51,13 +46,7 @@ public class RoomController {
 		if (userId == null || userId.isEmpty()) {
 			return "redirect:/sign-in";
 		}
-		String roomId = getSaltString();
-		Room newRoom = new Room();
-		newRoom.setRoomid(roomId);
-		newRoom.setHost(Long.parseLong(userId));
-		newRoom.setStatus((byte) 0);
-		roomMapper.insert(newRoom);
-		return this.mainService.createRoom(userId, roomId);
+		return this.mainService.createRoom(userId);
 	}
 
 	@GetMapping("/room/{roomId}")
@@ -67,7 +56,8 @@ public class RoomController {
 		if (username == null || username.isEmpty()) {
 			return new ModelAndView("redirect:/sign-in");
 		}
-		return this.mainService.joinRoom(roomId, username, id);
+		String ip = HttpUtils.getRequestIP(request);
+		return this.mainService.joinRoom(roomId, username, id, ip);
 	}
 
 	@GetMapping("/join-room")
@@ -77,7 +67,8 @@ public class RoomController {
 		if (username == null || username.isEmpty()) {
 			return new ModelAndView("redirect:/sign-in");
 		}
-		return mainService.joinRoom(room, username, id);
+		String ip = HttpUtils.getRequestIP(request);
+		return mainService.joinRoom(room, username, id, ip);
 	}
 
 	protected String getSaltString() {
@@ -93,6 +84,5 @@ public class RoomController {
 		salt.setCharAt(7, '-');
 		String saltStr = salt.toString();
 		return saltStr;
-
 	}
 }

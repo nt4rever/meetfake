@@ -1,6 +1,9 @@
 const myVideo = document.querySelector("#vd1");
 const roomId = document.querySelector(".roomcode").innerText;
 let username;
+let myIp = document.querySelector('[name="ip"]').value;
+let myId = document.querySelector('[name="userId"]').value;
+let auth = document.querySelector('[name="auth"]').value;
 const chatRoom = document.querySelector('.chat-cont');
 const sendButton = document.querySelector('.chat-send');
 const messageField = document.querySelector('.chat-input');
@@ -73,12 +76,12 @@ let myvideooff = document.querySelector("#myvideooff");
 myvideooff.style.visibility = 'hidden';
 
 const configuration = {
-    // iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
-    iceServers: [{urls: ["stun:hk-turn1.xirsys.com"]}, {
-        username: "3GEDCOyjRSCgUjFFoqhuT2aPxelcw4uAH4aEzK2f40YPdCiyUJD5c24yxZVSbZ0eAAAAAGFyncR0YW5pdXRhbg==",
-        credential: "a2312990-3329-11ec-aeb7-0242ac120004",
-        urls: ["turn:hk-turn1.xirsys.com:80?transport=udp", "turn:hk-turn1.xirsys.com:3478?transport=udp", "turn:hk-turn1.xirsys.com:80?transport=tcp", "turn:hk-turn1.xirsys.com:3478?transport=tcp", "turns:hk-turn1.xirsys.com:443?transport=tcp", "turns:hk-turn1.xirsys.com:5349?transport=tcp"]
-    }]
+    iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
+    //iceServers: [{urls: ["stun:hk-turn1.xirsys.com"]}, {
+    //    username: "3GEDCOyjRSCgUjFFoqhuT2aPxelcw4uAH4aEzK2f40YPdCiyUJD5c24yxZVSbZ0eAAAAAGFyncR0YW5pdXRhbg==",
+    //    credential: "a2312990-3329-11ec-aeb7-0242ac120004",
+    //    urls: ["turn:hk-turn1.xirsys.com:80?transport=udp", "turn:hk-turn1.xirsys.com:3478?transport=udp", "turn:hk-turn1.xirsys.com:80?transport=tcp", "turn:hk-turn1.xirsys.com:3478?transport=tcp", "turns:hk-turn1.xirsys.com:443?transport=tcp", "turns:hk-turn1.xirsys.com:5349?transport=tcp"]
+    //}]
 }
 
 const mediaConstraints = {video: true, audio: true};
@@ -133,6 +136,9 @@ socket.onopen = function () {
         type: 'join',
         data: {
             roomId: roomId,
+            ip: myIp,
+            id: myId,
+            auth: auth,
             time: getTime(),
         },
     });
@@ -837,6 +843,7 @@ function handleGetUserMediaError(e) {
     }
 
 }
+
 
 function getTime() {
     return new Date().toLocaleTimeString();
