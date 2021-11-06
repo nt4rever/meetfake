@@ -18,6 +18,7 @@ public class Room {
 	private final Map<WebSocketSession, Object> info = new HashMap<>();
 
 	private String board;
+	private boolean screenShare = false;
 
 	public Room(String id, String room_id, String host_id) {
 		this.id = id;
@@ -43,6 +44,14 @@ public class Room {
 
 	public void setBoard(String board) {
 		this.board = board;
+	}
+
+	public boolean isScreenShare() {
+		return screenShare;
+	}
+
+	public void setScreenShare(boolean screenShare) {
+		this.screenShare = screenShare;
 	}
 
 	public Map<WebSocketSession, String> getClients() {

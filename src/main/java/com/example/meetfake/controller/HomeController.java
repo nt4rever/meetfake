@@ -6,6 +6,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,9 @@ public class HomeController {
 
 	@Autowired
 	UserMapper mapper;
+
+	@Value("${dashboard.url}")
+	private String url;
 
 	@GetMapping("/")
 	public String index(HttpServletRequest request, Model model) {
@@ -46,7 +50,7 @@ public class HomeController {
 			String token = getToken();
 			user.setToken(token);
 			mapper.updateByPrimaryKey(user);
-			return "redirect:https://meetdashboard.up.railway.app/api/login?id=" + user.getId() + "&token=" + token;
+			return "redirect:" + url + "/api/login?id=" + user.getId() + "&token=" + token;
 		}
 		return "redirect:/sign-in";
 	}

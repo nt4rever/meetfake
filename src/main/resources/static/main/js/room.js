@@ -544,6 +544,82 @@ audioButt.addEventListener('click', () => {
     }
 })
 
+let hasScreenShare = false;
+screenShareButt.addEventListener('click', () => {
+    if(!hasScreenShare)
+        screenShareToggle();
+});
+
+
+let screenshareEnabled = false;
+function screenShareToggle() {
+    let screenMediaPromise;
+    if (!screenshareEnabled) {
+        if (navigator.getDisplayMedia) {
+            screenMediaPromise = navigator.getDisplayMedia({ video: true });
+        } else if (navigator.mediaDevices.getDisplayMedia) {
+            screenMediaPromise = navigator.mediaDevices.getDisplayMedia({ video: true });
+        } else {
+            screenMediaPromise = navigator.mediaDevices.getUserMedia({
+                video: { mediaSource: "screen" },
+            });
+        }
+    } else {
+        screenMediaPromise = navigator.mediaDevices.getUserMedia({ video: true });
+        sendToServer({
+                from: username,
+                type: 'screen share stop',
+                data: {
+                    time: getTime(),
+                }
+            });
+        videoContainer.className = 'video-cont';
+        $("#vcont").find(".video-box").css("display","block")
+        screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">Share Screen</span>';
+    }
+    screenMediaPromise
+        .then((myscreenshare) => {
+            screenshareEnabled = !screenshareEnabled;
+            for (let key in connections) {
+                const sender = connections[key]
+                    .getSenders()
+                    .find((s) => (s.track ? s.track.kind === "video" : false));
+                sender.replaceTrack(myscreenshare.getVideoTracks()[0]);
+            }
+            myscreenshare.getVideoTracks()[0].enabled = true;
+            const newStream = new MediaStream([
+                myscreenshare.getVideoTracks()[0], 
+            ]);
+            myVideo.srcObject = newStream;
+            myVideo.muted = true;
+            mystream = newStream;
+            screenShareButt.innerHTML = (screenshareEnabled 
+                ? `<i class="fas fa-desktop"></i><span class="tooltiptext">Stop Share Screen</span>`
+                : `<i class="fas fa-desktop"></i><span class="tooltiptext">Share Screen</span>`
+            );
+            myscreenshare.getVideoTracks()[0].onended = function() {
+                if (screenshareEnabled) screenShareToggle();
+            };
+            if(screenshareEnabled){
+                sendToServer({
+                    from: username,
+                    type: 'screen share',
+                    data: {
+                        time: getTime(),
+                    }
+                });
+                videoContainer.className = 'video-cont-single';
+                $("#vcont").find(".video-box").css("display","none");
+                $("#vcont").find("#myVideoSrc").css("display","block");
+                $("#vcont").find("#myVideoSrc").children(".video-frame").css('object-fit','contain');
+            }
+        })
+        .catch((e) => {
+            alert("Unable to share screen:" + e.message);
+            console.error(e);
+        });
+}
+
 //receive message from server
 socket.onmessage = async function (msg) {
     let message = JSON.parse(msg.data);
@@ -666,6 +742,24 @@ socket.onmessage = async function (msg) {
             drawsizeRemote = dataBody.size;
             drawRemote(dataBody.newx, dataBody.newy, dataBody.prevx, dataBody.prevy);
             break;
+        case "start screen":
+            let sidScr = dataBody.sid;
+            log(sidScr);
+            videoContainer.className = 'video-cont-single';
+            $("#vcont").find(".video-box").css("display","none");
+            $("#vcont").find("#"+sidScr).css("display","block")
+            $("#vcont").find("#"+sidScr).children(".video-frame").css('object-fit','contain');
+            hasScreenShare = true;
+            screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">'+message.from+'</span>';
+            break;
+
+        case "screen share stop":
+            videoContainer.className = 'video-cont';
+            $("#vcont").find(".video-box").css("display","block");
+            hasScreenShare = false;
+            screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">Share Screen</span>';
+            break;
+
         default:
             handleErrorMessage('Wrong type message received from server');
     }

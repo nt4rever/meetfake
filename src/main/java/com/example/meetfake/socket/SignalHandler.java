@@ -54,6 +54,9 @@ public class SignalHandler extends TextWebSocketHandler {
 	private static final String MSG_TYPE_CLEAR_BOARD = "clearBoard";
 	private static final String MSG_TYPE_STORE_CANVAS = "store canvas";
 
+	private static final String MSG_TYPE_SCREEN_SHARING = "screen share";
+	private static final String MSG_TYPE_SCREEN_SHARING_STOP = "screen share stop";
+
 	@Override
 	public void afterConnectionEstablished(final WebSocketSession session) {
 		// webSocket has been opened, send a message to the client
@@ -281,6 +284,34 @@ public class SignalHandler extends TextWebSocketHandler {
 				for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
 					if (client.getKey().equals(session) == false)
 						sendMessage(client.getKey(), new WebSocketMessage(username, "draw", dataBody.toString()));
+				}
+			}
+			break;
+
+		case MSG_TYPE_SCREEN_SHARING:
+			if (rm != null) {
+				if (!rm.isScreenShare()) {
+					rm.setScreenShare(true);
+					clients = roomService.getClients(rm);
+					JSONObject objectScr = new JSONObject();
+					objectScr.put("sid", session.getId());
+					for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+						if (client.getKey().equals(session) == false)
+							sendMessage(client.getKey(),
+									new WebSocketMessage(username, "start screen", objectScr.toString()));
+					}
+				}
+			}
+			break;
+
+		case MSG_TYPE_SCREEN_SHARING_STOP:
+			if (rm != null) {
+				rm.setScreenShare(false);
+				clients = roomService.getClients(rm);
+				for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+					if (client.getKey().equals(session) == false)
+						sendMessage(client.getKey(),
+								new WebSocketMessage(username, "screen share stop", dataBody.toString()));
 				}
 			}
 			break;
