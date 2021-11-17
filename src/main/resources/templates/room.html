@@ -6,7 +6,7 @@
     <title th:text="'MeetFake - ' +${title}"></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" th:href="@{/main/css/style.css}">
+    <link type="text/css" rel="stylesheet" th:href="@{/main/css/style.css}">
     <script src="https://kit.fontawesome.com/6510466b6c.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
@@ -18,9 +18,10 @@
             <div class="video-box" id="myVideoSrc">
                 <video class="video-frame" id="vd1" autoplay playsinline>
                 </video>
+                <div class="pin"><i class="fas fa-thumbtack"></i></div>
                 <div class="nametag" id="myname" th:text="${username}">yourname</div>
                 <div class="mute-icon" id="mymuteicon"><i class="fas fa-microphone-slash"></i></div>
-                <div class="video-off" id="myvideooff">Video Off</div>
+                <div class="video-off" id="myvideooff"><span>L</span></div>
             </div>
         </div>
 

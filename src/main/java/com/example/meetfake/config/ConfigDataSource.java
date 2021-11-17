@@ -17,13 +17,13 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class ConfigDataSource {
 
-	@Value("${db.datasource.url}")
+	@Value("${dbheroku.datasource.url}")
 	private String url;
 
-	@Value("${db.datasource.username}")
+	@Value("${dbheroku.datasource.username}")
 	private String user;
 
-	@Value("${db.datasource.password}")
+	@Value("${dbheroku.datasource.password}")
 	private String password;
 
 	private String driverClass = "com.mysql.cj.jdbc.Driver";

@@ -528,7 +528,17 @@ navbar .logo {
     bottom: 10px;
     position: absolute;
     left: 10px;
-    bottom: 10px;
+}
+
+.container-room .left-cont .video-cont .video-box .pin {
+    color: white;
+    top: 10px;
+    position: absolute;
+    left: 10px;
+}
+
+.container-room .left-cont .video-cont .video-box .pin :hover {
+    color: #e67e22;
 }
 
 .container-room .left-cont .video-cont .video-box .video-off {
@@ -541,6 +551,16 @@ navbar .logo {
     right: 0;
     margin-left: auto;
     margin-right: auto;
+
+    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 30px;
+    text-transform: uppercase;
 }
 
 .container-room .left-cont .video-cont .video-box .mute-icon {
@@ -579,7 +599,17 @@ navbar .logo {
     bottom: 10px;
     position: absolute;
     left: 10px;
-    bottom: 10px;
+}
+
+.container-room .left-cont .video-cont-single .video-box .pin {
+    color: white;
+    top: 10px;
+    position: absolute;
+    left: 10px;
+}
+
+.container-room .left-cont .video-cont-single .video-box .pin :hover {
+    color: #e67e22;
 }
 
 .container-room .left-cont .video-cont-single .video-box .video-off {
@@ -592,6 +622,16 @@ navbar .logo {
     right: 0;
     margin-left: auto;
     margin-right: auto;
+
+    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 30px;
+    text-transform: uppercase;
 }
 
 .container-room .left-cont .video-cont-single .video-box .mute-icon {
@@ -961,4 +1001,3 @@ navbar .logo {
     opacity: 0.8;
 }
 
-/*# sourceMappingURL=style.css.map */

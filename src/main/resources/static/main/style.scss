@@ -1,42 +1,25 @@
-$blue: #2980b9;
-$blue0: #3498db;
-$blue-1: #74b9ff;
-$white: #ecf0f1;
-//$nicegreen: #4ecca3;
-$nicegreen: #1a73e8;
-$black: #393e46;
-$spacemono: "Space Mono", monospace;
-$opensans: "Open Sans", sans-serif;
-
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
-
+@import "https://fonts.googleapis.com/css2?family=Open+Sans&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Lato&display=swap";
 * {
     text-decoration: none;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: $opensans;
+    font-family: "Open Sans", sans-serif;
 }
-
 .mr-1 {
     margin-right: 10px;
 }
-
 .mr-2 {
     margin-right: 20px;
 }
-
 .mr-3 {
     margin-right: 30px;
 }
-
 .mr-4 {
     margin-right: 40px;
 }
-
 .unselectable {
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -44,15 +27,12 @@ $opensans: "Open Sans", sans-serif;
     -o-user-select: none;
     user-select: none;
 }
-
 img {
     max-width: 100%;
 }
-
 body {
     background-color: #ffffff;
 }
-
 navbar {
     .logo {
         font-size: 28px;
@@ -62,17 +42,14 @@ navbar {
         margin-top: 32px;
     }
 }
-
 .main {
     display: flex;
     padding: 0 12%;
-    margin-top: 20vh;
+    margin-top: 10vh;
     width: 100%;
-
     .create-join {
         width: 85%;
         margin-right: 50px;
-
         .text {
             .head {
                 font-size: 36px;
@@ -85,7 +62,6 @@ navbar {
                 margin-top: 10px;
             }
         }
-
         .createroom-butt {
             width: 100%;
             margin-top: 60px;
@@ -99,19 +75,16 @@ navbar {
             border-radius: 10px;
             border: 2px solid #1a73e8;
             transition: 0.3s;
-
             &:hover {
                 background-color: white;
                 border: 2px solid #1a73e8;
                 color: #1a73e8;
                 cursor: pointer;
             }
-
             &:focus {
                 outline: none;
             }
         }
-
         .createroom-clicked {
             width: 100%;
             margin-top: 60px;
@@ -124,12 +97,10 @@ navbar {
             background-color: white;
             border: 2px solid #1a73e8;
             color: #1a73e8;
-
             &:focus {
                 outline: none;
             }
         }
-
         .roomcode {
             width: 100%;
             margin-top: 30px;
@@ -141,7 +112,6 @@ navbar {
             border-bottom: 3px solid #232931;
             border-top: 2px solid white;
             font-weight: bold;
-
             &:focus {
                 background-color: white;
                 border: 0;
@@ -151,11 +121,9 @@ navbar {
                 border-radius: 0;
             }
         }
-
         .roomcode-error {
-            border-bottom: 3px solid rgb(211, 28, 28);
+            border-bottom: 3px solid #d31c1c;
         }
-
         .joinroom {
             margin-top: 20px;
             width: 100%;
@@ -163,18 +131,15 @@ navbar {
             font-size: 24px;
             font-weight: bold;
             color: #232931;
-
             &:hover {
                 cursor: pointer;
                 text-decoration: underline;
             }
         }
     }
-
     .video-cont {
         width: 100%;
         text-align: center;
-
         .video-self {
             height: 400px;
             width: 100%;
@@ -182,13 +147,11 @@ navbar {
             border-radius: 10px;
             object-fit: cover;
         }
-
         .settings {
             margin: 0 auto;
             display: flex;
             margin-top: 10px;
             width: 100px;
-
             .device {
                 background-color: #1a73e8;
                 border-radius: 100px;
@@ -197,13 +160,11 @@ navbar {
                 height: 40px;
                 margin-right: 10px;
                 color: white;
-
                 &:hover {
                     background-color: #393e46;
                     cursor: pointer;
                 }
             }
-
             .nodevice {
                 background-color: #b12c2c;
                 border-radius: 100px;
@@ -212,7 +173,6 @@ navbar {
                 height: 40px;
                 margin-right: 10px;
                 color: white;
-
                 &:hover {
                     background-color: #393e46;
                     cursor: pointer;
@@ -221,23 +181,6 @@ navbar {
         }
     }
 }
-
-@media (max-width: 1200px) {
-    .main {
-        flex-direction: column;
-
-        .create-join {
-            width: 100%;
-            margin-right: 0;
-        }
-
-        .video-cont {
-            margin-top: 100px;
-            margin-bottom: 100px;
-        }
-    }
-}
-
 .overlay {
     position: fixed;
     z-index: 100;
@@ -247,8 +190,7 @@ navbar {
     right: 0;
     height: 100%;
     width: 100%;
-    background-color: $black;
-
+    background-color: #393e46;
     .box {
         width: 25%;
         margin: 0 auto;
@@ -257,14 +199,12 @@ navbar {
         margin-top: 100px;
         border-radius: 10px;
         text-align: center;
-
         .head-name {
             padding-top: 20px;
             text-align: center;
-            color: $black;
+            color: #393e46;
             font-weight: bold;
         }
-
         .name-field {
             margin: 0px auto;
             margin-top: 20px;
@@ -272,22 +212,20 @@ navbar {
             font-weight: bold;
             padding: 10px;
             width: 90%;
-            border-bottom: 3px solid $nicegreen;
-            color: $black;
+            border-bottom: 3px solid #1a73e8;
+            color: #393e46;
             height: 40px;
-
             &:focus {
                 outline: none;
             }
         }
-
         .continue-name {
             border: none;
             margin: 0 auto;
             margin-top: 30px;
             color: #ffffff;
             font-weight: bold;
-            background-color: $nicegreen;
+            background-color: #1a73e8;
             padding: 12px 20px;
             border-radius: 10px;
             transition: opacity 0.5s;
@@ -301,41 +239,31 @@ navbar {
         }
     }
 }
-
 .container-room {
     margin: 0;
     top: 0;
     bottom: 0;
     display: flex;
-    background-color: $white;
-
-    ::-webkit-scrollbar {
+    background-color: #ecf0f1;
+    &::-webkit-scrollbar {
         width: 10px;
     }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
+    &::-webkit-scrollbar-track {
         background: #f1f1f1;
     }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: rgb(197, 197, 197);
+    &::-webkit-scrollbar-thumb {
+        background: #c5c5c5;
+        &:hover {
+            background: #555;
+        }
     }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
     .left-cont {
         width: 80%;
-        background-color: $black;
+        background-color: #393e46;
         height: 100vh;
         padding: 50px;
         text-align: center;
         position: relative;
-
         .whiteboard-cont {
             height: 85vh;
             width: 100%;
@@ -344,27 +272,23 @@ navbar {
             top: 0;
             padding: 50px;
             padding-bottom: 0;
-            min-height: 600px;
-
+            min-height: 587px;
             #whiteboard {
-                background-color: rgb(255, 255, 255);
+                background-color: white;
                 border-radius: 10px;
             }
-
             .colors-cont {
                 position: absolute;
                 right: 80px;
                 top: 80px;
                 display: flex;
                 flex-direction: column;
-
                 .black {
                     height: 30px;
                     width: 30px;
                     border-radius: 50px;
                     background-color: black;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -375,7 +299,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #e74c3c;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -386,7 +309,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #f1c40f;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -397,7 +319,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #badc58;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -408,7 +329,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #e67e22;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -419,7 +339,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #9b59b6;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -430,7 +349,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #3498db;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -441,7 +359,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #fd79a8;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -452,7 +369,6 @@ navbar {
                     border-radius: 50px;
                     background-color: #834c32;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
@@ -463,43 +379,37 @@ navbar {
                     border-radius: 50px;
                     background-color: gray;
                     margin-top: 10px;
-
                     &:hover {
                         cursor: pointer;
                     }
                 }
-
                 .eraser {
                     height: 30px;
                     width: 30px;
                     font-size: 26px;
                     margin-top: 10px;
-                    color: rgb(43, 43, 43);
+                    color: #2b2b2b;
                     &:hover {
                         cursor: pointer;
                     }
                 }
-
                 .clearboard {
                     height: 30px;
                     width: 30px;
                     font-size: 26px;
                     margin-top: 10px;
-                    color: rgb(43, 43, 43);
+                    color: #2b2b2b;
                     &:hover {
                         cursor: pointer;
                     }
                 }
             }
         }
-
         .video-cont {
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-gap: 20px;
             height: 75vh;
-            // overflow-y: auto;
-
             .video-box {
                 background-color: #353b48;
                 height: 100%;
@@ -507,7 +417,6 @@ navbar {
                 width: 100%;
                 border-radius: 5px;
                 position: relative;
-
                 .video-frame {
                     background-color: #353b48;
                     height: 100%;
@@ -516,15 +425,18 @@ navbar {
                     object-fit: cover;
                     border-radius: 5px;
                 }
-
                 .nametag {
                     color: white;
                     bottom: 10px;
                     position: absolute;
                     left: 10px;
-                    bottom: 10px;
                 }
-
+                .pin {
+                    color: white;
+                    top: 10px;
+                    position: absolute;
+                    left: 10px;
+                }
                 .video-off {
                     color: white;
                     bottom: 10px;
@@ -535,10 +447,19 @@ navbar {
                     right: 0;
                     margin-left: auto;
                     margin-right: auto;
+                    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+                    width: 45px;
+                    height: 45px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 50%;
+                    font-size: 20px;
+                    color: #fff;
+                    text-transform: uppercase;
                 }
-
                 .mute-icon {
-                    color: rgb(214, 52, 52);
+                    color: #d63434;
                     bottom: 10px;
                     position: absolute;
                     right: 10px;
@@ -547,11 +468,8 @@ navbar {
                 }
             }
         }
-
         .video-cont-single {
             height: 75vh;
-            // overflow-y: auto;
-
             .video-box {
                 background-color: #353b48;
                 height: 100%;
@@ -559,7 +477,6 @@ navbar {
                 width: 100%;
                 border-radius: 5px;
                 position: relative;
-
                 .video-frame {
                     background-color: #353b48;
                     height: 100%;
@@ -568,7 +485,6 @@ navbar {
                     object-fit: cover;
                     border-radius: 5px;
                 }
-
                 .nametag {
                     color: white;
                     bottom: 10px;
@@ -576,7 +492,6 @@ navbar {
                     left: 10px;
                     bottom: 10px;
                 }
-
                 .video-off {
                     color: white;
                     bottom: 10px;
@@ -588,9 +503,8 @@ navbar {
                     margin-left: auto;
                     margin-right: auto;
                 }
-
                 .mute-icon {
-                    color: rgb(214, 52, 52);
+                    color: #d63434;
                     bottom: 10px;
                     position: absolute;
                     right: 10px;
@@ -599,7 +513,6 @@ navbar {
                 }
             }
         }
-
         .footer {
             position: relative;
             .utils {
@@ -612,9 +525,8 @@ navbar {
                 border-radius: 10px;
                 padding: 10px;
                 justify-content: center;
-
                 .audio {
-                    background-color: $nicegreen;
+                    background-color: #1a73e8;
                     text-align: center;
                     color: white;
                     padding: 10px;
@@ -624,12 +536,11 @@ navbar {
                     transition: background-color 0.3s;
                     &:hover {
                         cursor: pointer;
-                        background-color: $black;
+                        background-color: #393e46;
                     }
                 }
-
                 .novideo {
-                    background-color: $nicegreen;
+                    background-color: #1a73e8;
                     text-align: center;
                     margin-left: 10px;
                     color: white;
@@ -638,18 +549,16 @@ navbar {
                     width: 40px;
                     border-radius: 100px;
                     transition: background-color 0.3s;
-
                     &:hover {
                         cursor: pointer;
-                        background-color: $black;
+                        background-color: #393e46;
                     }
                 }
-
                 .screenshare {
                     background-color: #d8d8d8;
                     text-align: center;
                     margin-left: 10px;
-                    color: $black;
+                    color: #393e46;
                     padding: 10px;
                     height: 40px;
                     width: 40px;
@@ -659,14 +568,13 @@ navbar {
                     &:hover {
                         cursor: pointer;
                         color: white;
-                        background-color: $black;
+                        background-color: #393e46;
                     }
                 }
-
                 .board-icon {
                     background-color: #d8d8d8;
                     text-align: center;
-                    color: $black;
+                    color: #393e46;
                     margin-left: 10px;
                     padding: 10px;
                     height: 40px;
@@ -677,10 +585,9 @@ navbar {
                     &:hover {
                         cursor: pointer;
                         color: white;
-                        background-color: $black;
+                        background-color: #393e46;
                     }
                 }
-
                 .cutcall {
                     background-color: #cc4e4e;
                     text-align: center;
@@ -691,36 +598,32 @@ navbar {
                     width: 40px;
                     border-radius: 100px;
                     transition: background-color 0.3s;
-
                     &:hover {
                         cursor: pointer;
-                        background-color: $black;
+                        background-color: #393e46;
                     }
                 }
             }
-
             .copycode-cont {
                 position: absolute;
                 top: 10px;
                 left: 0;
                 display: flex;
-
                 .roomcode {
-                    color: $nicegreen;
+                    color: #1a73e8;
                     padding: 10px 20px;
                     background-color: white;
-                    border-bottom: 3px solid $nicegreen;
+                    border-bottom: 3px solid #1a73e8;
                     font-weight: bold;
                     border-top-left-radius: 5px;
                     border-bottom-left-radius: 5px;
                 }
-
                 .copycode-button {
                     padding: 10px 0;
                     width: 100px;
                     text-align: center;
                     color: white;
-                    background-color: $nicegreen;
+                    background-color: #1a73e8;
                     border: none;
                     font-weight: bold;
                     outline: none;
@@ -729,7 +632,6 @@ navbar {
                     &:hover {
                         cursor: pointer;
                     }
-
                     &:focus {
                         outline: none;
                     }
@@ -737,61 +639,61 @@ navbar {
             }
         }
     }
-
+    #vcont {
+        overflow-y: scroll;
+    }
     .right-cont {
-        width: 30%;
+        width: 25%;
         background-color: #ffffff;
         height: 100vh;
-
-        ::-webkit-scrollbar {
+        &::-webkit-scrollbar {
             width: 10px;
         }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
+        &::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: rgb(197, 197, 197);
+        &::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            &:hover {
+                background: #555;
+            }
         }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
         .head-title {
             font-weight: bold;
-            color: $black;
+            color: #393e46;
             background-color: #ffffff;
             width: 100%;
             display: flex;
-            border-bottom: 2px solid $black;
-
-            .chats,
+            border-bottom: 2px solid #393e46;
+            .chats {
+                padding: 10px;
+                padding-top: 20px;
+                width: 100%;
+                text-align: center;
+                transition: background-color 0.5s;
+                &:hover {
+                    background-color: #f8f8f8;
+                    cursor: pointer;
+                }
+            }
             .attendies {
                 padding: 10px;
                 padding-top: 20px;
                 width: 100%;
                 text-align: center;
                 transition: background-color 0.5s;
-
                 &:hover {
                     background-color: #f8f8f8;
                     cursor: pointer;
                 }
             }
         }
-
         .chat-cont {
             background-color: #ffffff;
             height: 82vh;
             padding: 10px;
             padding-top: 10px;
             overflow-y: scroll;
-
             .message {
                 margin-bottom: 15px;
                 margin-left: 10px;
@@ -802,71 +704,92 @@ navbar {
                 .info {
                     display: flex;
                     font-size: 0.85rem;
-
                     .username {
                         font-weight: bold;
-                        color: $nicegreen;
+                        color: #1a73e8;
                     }
-
                     .time {
                         margin-left: 12px;
                     }
                 }
-
                 .content {
                     margin-top: 5px;
                     font-size: 0.9rem;
                 }
             }
+            .attendies {
+                margin-bottom: 15px;
+                margin-left: 10px;
+                background-color: #ffffff;
+                border-radius: 2px;
+                word-break: break-all;
+                word-wrap: break-word;
+                .info {
+                    display: flex;
+                    font-size: 0.85rem;
+                    .avatar {
+                        background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+                        width: 45px;
+                        height: 45px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 50%;
+                        font-size: 20px;
+                        color: #fff;
+                        text-transform: uppercase;
+                    }
+                    .username {
+                        margin-left: 12px;
+                        font-weight: bold;
+                        color: rgba(5, 34, 66, 0.79);
+                        font-size: 16px;
+                        display: flex;
+                        align-items: center;
+                    }
+                }
+            }
         }
-
         .chat-input-cont {
             padding: 12px;
             display: flex;
             height: 60px;
             background-color: #ffffff;
             box-shadow: 0px -4px 4px rgba(0, 0, 0, 0.15);
-
             .ci-cont {
                 width: 80%;
             }
-
             .ci-send {
                 width: 20%;
                 margin-left: 20px;
             }
-
             .chat-input {
                 width: 100%;
                 height: 36px;
                 font-size: 0.85rem;
                 padding: 4px 10px;
-
+                border: none;
+                border-bottom: 3px solid #1a73e8;
+                color: #393e46;
                 &:focus {
                     outline: none;
                 }
-                border: none;
-                border-bottom: 3px solid $nicegreen;
-                color: $black;
             }
-
             .chat-send {
                 height: 36px;
                 padding: 5px 20px;
                 border: none;
                 background-color: white;
-                color: $nicegreen;
+                color: #1a73e8;
                 font-weight: bold;
                 font-size: 0.85rem;
                 border-radius: 2px;
                 transition: background-color 0.5s;
-
                 &:hover {
-                    color: $blue;
+                    color: #2980b9;
                     cursor: pointer;
-                    background-color: rgb(243, 243, 243);
+                    background-color: #f3f3f3;
                 }
-
                 &:focus {
                     outline: none;
                 }
@@ -874,42 +797,53 @@ navbar {
         }
     }
 }
-
 .tooltip {
     position: relative;
     display: inline-block;
+    .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #0f0f0f;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        font-size: 14px;
+        transition: opacity 0.3s;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #0f0f0f transparent transparent transparent;
+        }
+    }
+    &:hover {
+        .tooltiptext {
+            visibility: visible;
+            opacity: 0.8;
+        }
+    }
 }
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: rgb(15, 15, 15);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    font-size: 14px;
-    transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: rgb(15, 15, 15) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 0.8;
+@media (max-width: 1200px) {
+    .main {
+        flex-direction: column;
+        .create-join {
+            width: 100%;
+            margin-right: 0;
+        }
+        .video-cont {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+    }
 }

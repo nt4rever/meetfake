@@ -69,6 +69,8 @@ let videoInfo = {};
 
 let videoTrackReceived = {};
 
+let pinScreenStatus = false;
+
 let mymuteicon = document.querySelector("#mymuteicon");
 mymuteicon.style.visibility = 'hidden';
 
@@ -126,7 +128,7 @@ function CopyClassText() {
 }
 
 //establish socket
-const socket = new WebSocket("ws://" + window.location.host + "/signal");
+const socket = new WebSocket("wss://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
@@ -216,15 +218,18 @@ async function joinHandle(conc, cnames, micinfo, videoinfo) {
                     let name = document.createElement('div');
                     let muteIcon = document.createElement('div');
                     let videoOff = document.createElement('div');
+                    let pin =  document.createElement('div');
                     videoOff.classList.add('video-off');
                     muteIcon.classList.add('mute-icon');
+                    pin.classList.add('pin');
                     name.classList.add('nametag');
                     name.innerHTML = `${cName[sid]}`;
                     vidCont.id = sid;
                     muteIcon.id = `mute${sid}`;
                     videoOff.id = `vidoff${sid}`;
                     muteIcon.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
-                    videoOff.innerHTML = 'Video Off'
+                    pin.innerHTML = `<i class="fas fa-thumbtack"></i>`;
+                    videoOff.innerHTML = '<span>'+getFirstChar(cName[sid])+'</span>';
                     vidCont.classList.add('video-box');
                     newvideo.classList.add('video-frame');
                     newvideo.autoplay = true;
@@ -242,11 +247,19 @@ async function joinHandle(conc, cnames, micinfo, videoinfo) {
                     else
                         videoOff.style.visibility = 'visible';
 
+                    pin.addEventListener('click',()=>{
+                        pinScreenStatus = !pinScreenStatus;
+                        if(pinScreenStatus){
+                        pinScreen(sid); 
+                        }else{
+                            unPinScreen();
+                        }
+                    });
                     vidCont.appendChild(newvideo);
                     vidCont.appendChild(name);
                     vidCont.appendChild(muteIcon);
                     vidCont.appendChild(videoOff);
-
+					vidCont.appendChild(pin);
                     videoContainer.appendChild(vidCont);
 
                 }
@@ -323,15 +336,18 @@ function handleVideoOffer(offer, sid, cname, micinf, vidinf) {
             let name = document.createElement('div');
             let muteIcon = document.createElement('div');
             let videoOff = document.createElement('div');
+            let pin =  document.createElement('div');
             videoOff.classList.add('video-off');
             muteIcon.classList.add('mute-icon');
             name.classList.add('nametag');
+            pin.classList.add('pin');
             name.innerHTML = `${cName[sid]}`;
             vidCont.id = sid;
             muteIcon.id = `mute${sid}`;
             videoOff.id = `vidoff${sid}`;
             muteIcon.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
-            videoOff.innerHTML = 'Video Off'
+            pin.innerHTML = `<i class="fas fa-thumbtack"></i>`;
+            videoOff.innerHTML = '<span>'+getFirstChar(cName[sid])+'</span>'
             vidCont.classList.add('video-box');
             newvideo.classList.add('video-frame');
             newvideo.autoplay = true;
@@ -349,11 +365,20 @@ function handleVideoOffer(offer, sid, cname, micinf, vidinf) {
             else
                 videoOff.style.visibility = 'visible';
 
+            pin.addEventListener('click',()=>{
+                pinScreenStatus = !pinScreenStatus;
+                if(pinScreenStatus){
+                    pinScreen(sid); 
+                }else{
+                    unPinScreen();
+                }
+            });
+
             vidCont.appendChild(newvideo);
             vidCont.appendChild(name);
             vidCont.appendChild(muteIcon);
             vidCont.appendChild(videoOff);
-
+            vidCont.appendChild(pin);
             videoContainer.appendChild(vidCont);
 
         }
@@ -573,8 +598,6 @@ function screenShareToggle() {
                     time: getTime(),
                 }
             });
-        videoContainer.className = 'video-cont';
-        $("#vcont").find(".video-box").css("display","block")
         screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">Share Screen</span>';
     }
     screenMediaPromise
@@ -608,10 +631,6 @@ function screenShareToggle() {
                         time: getTime(),
                     }
                 });
-                videoContainer.className = 'video-cont-single';
-                $("#vcont").find(".video-box").css("display","none");
-                $("#vcont").find("#myVideoSrc").css("display","block");
-                $("#vcont").find("#myVideoSrc").children(".video-frame").css('object-fit','contain');
             }
         })
         .catch((e) => {
@@ -743,19 +762,11 @@ socket.onmessage = async function (msg) {
             drawRemote(dataBody.newx, dataBody.newy, dataBody.prevx, dataBody.prevy);
             break;
         case "start screen":
-            let sidScr = dataBody.sid;
-            log(sidScr);
-            videoContainer.className = 'video-cont-single';
-            $("#vcont").find(".video-box").css("display","none");
-            $("#vcont").find("#"+sidScr).css("display","block")
-            $("#vcont").find("#"+sidScr).children(".video-frame").css('object-fit','contain');
             hasScreenShare = true;
             screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">'+message.from+'</span>';
             break;
 
         case "screen share stop":
-            videoContainer.className = 'video-cont';
-            $("#vcont").find(".video-box").css("display","block");
             hasScreenShare = false;
             screenShareButt.innerHTML = '<i class="fas fa-desktop"></i><span class="tooltiptext">Share Screen</span>';
             break;
@@ -802,6 +813,29 @@ messageField.addEventListener("keyup", function (event) {
     }
 });
 
+function pinScreen(videoId){
+    videoContainer.className = 'video-cont-single';
+    $("#vcont").find(".video-box").css("display","none");
+    $("#vcont").find("#"+videoId).css("display","block")
+    $("#vcont").find("#"+videoId).children(".video-frame").css('object-fit','contain');
+}
+
+function unPinScreen(){
+    videoContainer.className = 'video-cont';
+    $("#vcont").find(".video-box").css("display","block");
+    $("#vcont").find(".video-box").children(".video-frame").css('object-fit','cover');
+}
+
+let myVideoSrc = document.querySelector("#myVideoSrc .pin");
+myVideoSrc.addEventListener("click",()=>{
+    pinScreenStatus = !pinScreenStatus;
+    if(pinScreenStatus){
+         pinScreen("myVideoSrc");
+    }else{
+        unPinScreen();
+    }
+});
+
 //
 
 function clearBoard() {
@@ -822,14 +856,9 @@ function clearBoard() {
                 clear: 'yes',
             },
         })
-        // socket.emit('store canvas', canvas.toDataURL());
-        // socket.emit('clearBoard');
     } else return;
 }
 
-// socket.on('clearBoard', () => {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-// })
 
 function draw(newx, newy, oldx, oldy) {
     ctx.strokeStyle = color;
@@ -846,7 +875,6 @@ function draw(newx, newy, oldx, oldy) {
             url: canvas.toDataURL(),
         },
     });
-    // socket.emit('store canvas', canvas.toDataURL());
 }
 
 function drawRemote(newx, newy, oldx, oldy) {
@@ -868,7 +896,6 @@ canvas.addEventListener('mousedown', e => {
 canvas.addEventListener('mousemove', e => {
     if (isDrawing) {
         draw(e.offsetX, e.offsetY, x, y);
-        // socket.emit('draw', e.offsetX, e.offsetY, x, y, color, drawsize);
         sendToServer({
             from: username,
             type: "draw",
