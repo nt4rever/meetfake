@@ -5,7 +5,7 @@ let myIp = document.querySelector('[name="ip"]').value;
 let myId = document.querySelector('[name="userId"]').value;
 let auth = document.querySelector('[name="auth"]').value;
 const chatRoom = document.querySelector('.chat-cont');
-const sendButton = document.querySelector('.chat-send');
+const sendButton = document.querySelector('#chat-send-text');
 const messageField = document.querySelector('.chat-input');
 const videoContainer = document.querySelector('#vcont');
 
@@ -128,7 +128,7 @@ function CopyClassText() {
 }
 
 //establish socket
-const socket = new WebSocket("wss://" + window.location.host + "/signal");
+const socket = new WebSocket("ws://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
@@ -534,7 +534,6 @@ audioButt.addEventListener('click', () => {
                     track.enabled = false;
             })
         }
-        ;
 
         mymuteicon.style.visibility = 'visible';
         sendToServer({
@@ -680,23 +679,27 @@ socket.onmessage = async function (msg) {
         case "action":
             let msg = dataBody.action;
             let sid = dataBody.sid;
-            if (msg == 'mute') {
-                console.log(sid + ' muted themself');
-                document.querySelector(`#mute${sid}`).style.visibility = 'visible';
-                micInfo[sid] = 'off';
-            } else if (msg == 'unmute') {
-                console.log(sid + ' unmuted themself');
-                document.querySelector(`#mute${sid}`).style.visibility = 'hidden';
-                micInfo[sid] = 'on';
-            } else if (msg == 'videooff') {
-                console.log(sid + 'turned video off');
-                document.querySelector(`#vidoff${sid}`).style.visibility = 'visible';
-                videoInfo[sid] = 'off';
-            } else if (msg == 'videoon') {
-                console.log(sid + 'turned video on');
-                document.querySelector(`#vidoff${sid}`).style.visibility = 'hidden';
-                videoInfo[sid] = 'on';
-            }
+            try{
+                if (msg == 'mute') {
+                    console.log(sid + ' muted themself');
+                    document.querySelector(`#mute${sid}`).style.visibility = 'visible';
+                    micInfo[sid] = 'off';
+                } else if (msg == 'unmute') {
+                    console.log(sid + ' unmuted themself');
+                    document.querySelector(`#mute${sid}`).style.visibility = 'hidden';
+                    micInfo[sid] = 'on';
+                } else if (msg == 'videooff') {
+                    console.log(sid + 'turned video off');
+                    document.querySelector(`#vidoff${sid}`).style.visibility = 'visible';
+                    videoInfo[sid] = 'off';
+                } else if (msg == 'videoon') {
+                    console.log(sid + 'turned video on');
+                    document.querySelector(`#vidoff${sid}`).style.visibility = 'hidden';
+                    videoInfo[sid] = 'on';
+                }
+            }catch(e){
+                console.log(e);
+            };
             break;
         case "leave":
             log("leave #" + message.from);
@@ -718,7 +721,7 @@ socket.onmessage = async function (msg) {
             break;
 
         case "user count":
-            let sizeUser = dataBody.userCount;
+            sizeUser = dataBody.userCount;
             if (sizeUser > 1) {
                 videoContainer.className = 'video-cont';
             } else {
@@ -727,18 +730,92 @@ socket.onmessage = async function (msg) {
             let obj = JSON.parse(dataBody.listAttendies);
             attendiesList.innerHTML = '';
             for (const key in obj) {
-                console.log(key + ' - ' + obj[key])
-                attendiesList.innerHTML += `<div class="attendies">
-                    <div class="info">
-                        <div class="avatar">
-                            <span>${getFirstChar(obj[key])}</span>
-                        </div>
-                        <div class="username">${obj[key]}</div>
-                    </div>
-                    <input type="hidden" value="${key}">
-                </div>`;
+                let attd = document.createElement('div');
+                attd.classList.add('attendies');
+                let aInfo = document.createElement('div');
+                aInfo.classList.add('info');
+                let iAvatar = document.createElement('div');
+                iAvatar.classList.add('avatar');
+                iAvatar.innerHTML = `<span>${getFirstChar(obj[key])}</span>`;
+                let iUsername = document.createElement('div');
+                iUsername.classList.add('username');
+                iUsername.innerHTML = `${obj[key]}`;
+                aInfo.appendChild(iAvatar);
+                aInfo.appendChild(iUsername);
+                if (auth=='host'){
+                    let iMute = document.createElement('div');
+                    iMute.classList.add('muteMember');
+                    iMute.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
+                    let iBan = document.createElement('div');
+                    iBan.classList.add('banMember');
+                    iBan.innerHTML = `<i class="fas fa-ban"></i>`;
+                    let iInput = document.createElement('input');
+                    iInput.setAttribute("type", "hidden");
+                    iInput.setAttribute("name", "sid");
+                    iInput.value = key;
+                    iMute.addEventListener('click',(e)=>{
+                        var r = confirm("Turn off the mic of "+obj[key]+"!");
+                        if (r==true){
+                            let sid = e.target.parentNode.parentNode.querySelector('[name=sid]').value;
+                            sendToServer({
+                                from: username,
+                                type: 'host',
+                                data: {
+                                    sid: sid,
+                                    action: 'mute',
+                                },
+                            });
+                        }
+                    });
+                    iBan.addEventListener('click',(e)=>{
+                        var r = confirm("Ban "+obj[key]+"!");
+                        if (r==true){
+                            let sid = e.target.parentNode.parentNode.querySelector('[name=sid]').value;
+                            sendToServer({
+                                from: username,
+                                type: 'host',
+                                data: {
+                                    sid: sid,
+                                    action: 'ban',
+                                },
+                            });
+                        }
+                    });
+                    aInfo.appendChild(iInput);
+                    aInfo.appendChild(iMute);
+                    aInfo.appendChild(iBan);
+                }
+                attd.appendChild(aInfo)
+                attendiesList.appendChild(attd);
             }
 
+            break;
+        case "hostMute":
+            for (let key in audioTrackSent) {
+                audioTrackSent[key].enabled = false;
+            }
+            audioButt.innerHTML = `<i class="fas fa-microphone-slash"></i>`;
+            audioAllowed = 0;
+            audioButt.style.backgroundColor = "#b12c2c";
+            if (mystream) {
+                mystream.getTracks().forEach(track => {
+                    if (track.kind === 'audio')
+                        track.enabled = false;
+                })
+            }
+
+            mymuteicon.style.visibility = 'visible';
+            sendToServer({
+                from: username,
+                type: 'action',
+                data: {
+                    action: 'mute',
+                },
+            });
+            break;
+
+        case "hostBan":
+            location.href = '/';
             break;
 
         case "getCanvas":
@@ -785,25 +862,27 @@ cutCall.addEventListener('click', () => {
 sendButton.addEventListener('click', () => {
     const msg = messageField.value;
     messageField.value = '';
-    sendToServer({
-        from: username,
-        type: 'text',
-        data: {
-            message: msg,
-            time: getTime(),
-        },
+    if (msg!=''){
+        sendToServer({
+            from: username,
+            type: 'text',
+            data: {
+                message: msg,
+                time: getTime(),
+            },
+        });
+        chatRoom.scrollTop = chatRoom.scrollHeight;
+        chatRoom.innerHTML += `<div class="message">
+                        <div class="info">
+                            <div class="username">You</div>
+                            <div class="time">${getTime()}</div>
+                        </div>
+                        <div class="content">
+                            ${msg}
+                        </div>
+                    </div>`;
+        }
     });
-    chatRoom.scrollTop = chatRoom.scrollHeight;
-    chatRoom.innerHTML += `<div class="message">
-                    <div class="info">
-                        <div class="username">You</div>
-                        <div class="time">${getTime()}</div>
-                    </div>
-                    <div class="content">
-                        ${msg}
-                    </div>
-                </div>`;
-});
 
 //event enter keyup on message field
 messageField.addEventListener("keyup", function (event) {
@@ -821,7 +900,11 @@ function pinScreen(videoId){
 }
 
 function unPinScreen(){
-    videoContainer.className = 'video-cont';
+    if (sizeUser > 1) {
+        videoContainer.className = 'video-cont';
+    } else {
+        videoContainer.className = 'video-cont-single';
+    }
     $("#vcont").find(".video-box").css("display","block");
     $("#vcont").find(".video-box").children(".video-frame").css('object-fit','cover');
 }

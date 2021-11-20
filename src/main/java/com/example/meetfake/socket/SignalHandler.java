@@ -57,6 +57,8 @@ public class SignalHandler extends TextWebSocketHandler {
 	private static final String MSG_TYPE_SCREEN_SHARING = "screen share";
 	private static final String MSG_TYPE_SCREEN_SHARING_STOP = "screen share stop";
 
+	private static final String MSG_TYPE_HOST = "host";
+
 	@Override
 	public void afterConnectionEstablished(final WebSocketSession session) {
 		// webSocket has been opened, send a message to the client
@@ -233,13 +235,13 @@ public class SignalHandler extends TextWebSocketHandler {
 				clients = roomService.getClients(rm);
 				micSocket = roomService.getMicSocket(rm);
 				videoSocket = roomService.getVideoSocket(rm);
-				if (msg == "mute") {
+				if (msg.equals("mute")) {
 					micSocket.put(session, "off");
-				} else if (msg == "unmute") {
+				} else if (msg.equals("unmute")) {
 					micSocket.put(session, "on");
-				} else if (msg == "videoon") {
+				} else if (msg.equals("videoon")) {
 					videoSocket.put(session, "on");
-				} else if (msg == "videooff") {
+				} else if (msg.equals("videooff")) {
 					videoSocket.put(session, "off");
 				}
 				for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
@@ -248,6 +250,32 @@ public class SignalHandler extends TextWebSocketHandler {
 						objectAction.put("action", msg);
 						objectAction.put("sid", session.getId());
 						sendMessage(client.getKey(), new WebSocketMessage(username, "action", objectAction.toString()));
+					}
+				}
+			}
+			break;
+		case MSG_TYPE_HOST:
+			String action = (String) dataBody.get("action");
+			String sidRemote = (String) dataBody.get("sid");
+			if (action.equals("mute")) {
+				clients = roomService.getClients(rm);
+				for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+					if (client.getKey().getId().equals(sidRemote)) {
+						JSONObject objectAction = new JSONObject();
+						objectAction.put("action", "mute");
+						objectAction.put("sid", sidRemote);
+						sendMessage(client.getKey(), new WebSocketMessage(username, "hostMute", objectAction.toString()));
+					}
+				}
+			}
+			
+			if (action.equals("ban")) {
+				clients = roomService.getClients(rm);
+				for (Map.Entry<WebSocketSession, String> client : clients.entrySet()) {
+					if (client.getKey().getId().equals(sidRemote)) {
+						JSONObject objectAction = new JSONObject();
+						objectAction.put("sid", sidRemote);
+						sendMessage(client.getKey(), new WebSocketMessage(username, "hostBan", objectAction.toString()));
 					}
 				}
 			}
