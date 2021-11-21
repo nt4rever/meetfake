@@ -131,3 +131,9 @@ mic.addEventListener('click', () => {
         micAllowed = 1;
     }
 })
+
+$(function(){
+    $(window).on('load', function () {
+        $("#preloder").delay(200).fadeOut("slow");
+     });
+});

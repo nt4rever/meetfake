@@ -60,6 +60,34 @@ function reportWindowSize() {
 
 window.onresize = reportWindowSize;
 
+//send file modal
+const btnSendFile = document.querySelector('#btnSendFile');
+const fileInputElement = document.querySelector('[name="fileUpload"]');
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("file-upload");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 
 let videoAllowed = 1;
 let audioAllowed = 1;
@@ -78,12 +106,12 @@ let myvideooff = document.querySelector("#myvideooff");
 myvideooff.style.visibility = 'hidden';
 
 const configuration = {
-    iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
-    //iceServers: [{urls: ["stun:hk-turn1.xirsys.com"]}, {
-    //    username: "3GEDCOyjRSCgUjFFoqhuT2aPxelcw4uAH4aEzK2f40YPdCiyUJD5c24yxZVSbZ0eAAAAAGFyncR0YW5pdXRhbg==",
-    //    credential: "a2312990-3329-11ec-aeb7-0242ac120004",
-    //    urls: ["turn:hk-turn1.xirsys.com:80?transport=udp", "turn:hk-turn1.xirsys.com:3478?transport=udp", "turn:hk-turn1.xirsys.com:80?transport=tcp", "turn:hk-turn1.xirsys.com:3478?transport=tcp", "turns:hk-turn1.xirsys.com:443?transport=tcp", "turns:hk-turn1.xirsys.com:5349?transport=tcp"]
-    //}]
+    // iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
+    iceServers: [{urls: ["stun:hk-turn1.xirsys.com"]}, {
+       username: "3GEDCOyjRSCgUjFFoqhuT2aPxelcw4uAH4aEzK2f40YPdCiyUJD5c24yxZVSbZ0eAAAAAGFyncR0YW5pdXRhbg==",
+       credential: "a2312990-3329-11ec-aeb7-0242ac120004",
+       urls: ["turn:hk-turn1.xirsys.com:80?transport=udp", "turn:hk-turn1.xirsys.com:3478?transport=udp", "turn:hk-turn1.xirsys.com:80?transport=tcp", "turn:hk-turn1.xirsys.com:3478?transport=tcp", "turns:hk-turn1.xirsys.com:443?transport=tcp", "turns:hk-turn1.xirsys.com:5349?transport=tcp"]
+    }]
 }
 
 const mediaConstraints = {video: true, audio: true};
@@ -128,7 +156,7 @@ function CopyClassText() {
 }
 
 //establish socket
-const socket = new WebSocket("ws://" + window.location.host + "/signal");
+const socket = new WebSocket("wss://" + window.location.host + "/signal");
 
 // send a message to the server to join selected room with Web Socket
 socket.onopen = function () {
@@ -1010,6 +1038,44 @@ whiteboardButt.addEventListener('click', () => {
         whiteboardCont.style.visibility = 'visible';
         boardVisisble = true;
     }
+})
+
+btnSendFile.addEventListener('click',()=>{
+    var formData = new FormData();
+    if (!fileInputElement.files[0])
+        return false;
+    formData.append("userfile", fileInputElement.files[0]);
+    // JavaScript file-like object
+    var content = '<a id="a"><b id="b">hey!</b></a>'; // the body of the new file...
+    var blob = new Blob([content], { type: "text/xml"});
+    formData.append("webmasterfile", blob);
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+    var url = this.responseText;
+    var msg = `${username} sent <a href="${url}" target="_blank">a file</a>!`;
+    sendToServer({
+        from: username,
+        type: 'text',
+        data: {
+            message: msg,
+            time: getTime(),
+        },
+    });
+    chatRoom.scrollTop = chatRoom.scrollHeight;
+    chatRoom.innerHTML += `<div class="message">
+                    <div class="info">
+                        <div class="username">You</div>
+                        <div class="time">${getTime()}</div>
+                    </div>
+                    <div class="content">
+                        ${msg}
+                    </div>
+                </div>`;
+    }
+    request.open("POST", "https://meetdashboard.herokuapp.com/api/file");
+    request.send(formData);
+    fileInputElement.value = null;
+    modal.style.display = "none";
 })
 
 // use JSON format to send WebSocket message
