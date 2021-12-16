@@ -113,17 +113,12 @@ const configuration = {
     //   urls: ["turn:hk-turn1.xirsys.com:80?transport=udp", "turn:hk-turn1.xirsys.com:3478?transport=udp", "turn:hk-turn1.xirsys.com:80?transport=tcp", "turn:hk-turn1.xirsys.com:3478?transport=tcp", "turns:hk-turn1.xirsys.com:443?transport=tcp", "turns:hk-turn1.xirsys.com:5349?transport=tcp"]
     //}]
     'iceServers': [
-    	{'url': 'stun:stun.nt4rever.com:5349'},
+    	//{'url': 'stun:stun.nt4rever.com:5349'},
 	    {
-	      'url': 'turn:turn.nt4rever.com:5349?transport=udp',
+	      'url': 'turn:turn.nt4rever.com:5349',
 	      'credential': 'somepassword',
 	      'username': 'guest'
-	    },
-	    {
-	      'url': 'turn:turn.nt4rever.com:5349?transport=tcp',
-	      'credential': 'somepassword',
-	      'username': 'guest'
-	   }]
+	    }]
 }
 
 const mediaConstraints = {video: true, audio: true};
