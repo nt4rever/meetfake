@@ -107,11 +107,11 @@ myvideooff.style.visibility = 'hidden';
 
 const configuration = {
     'iceServers': [
-    	//{'url': 'stun:stun.nt4rever.com:5349'},
+    	{'url': 'stun:stun.nt4rever.live'},
 	    {
-	      'url': 'turn:turn.nt4rever.com:5349',
-	      'credential': 'somepassword',
-	      'username': 'guest'
+	      'url': 'turn:turn.nt4rever.live',
+	      'credential': '123456',
+	      'username': 'tan'
 	    }]
 }
 
