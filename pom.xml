@@ -65,6 +65,10 @@
 			<artifactId>json</artifactId>
 			<version>20180130</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

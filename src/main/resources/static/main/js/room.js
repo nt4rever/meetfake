@@ -745,6 +745,7 @@ socket.onmessage = async function (msg) {
             let sidLeave = dataBody.sid;
             if (document.getElementById(sidLeave)) {
                 document.getElementById(sidLeave).remove();
+                unPinScreen();
             }
             delete connections[sidLeave];
             break;
@@ -942,7 +943,7 @@ let myVideoSrc = document.querySelector("#myVideoSrc .pin");
 myVideoSrc.addEventListener("click",()=>{
     pinScreenStatus = !pinScreenStatus;
     if(pinScreenStatus){
-         pinScreen("myVideoSrc");
+        pinScreen("myVideoSrc");
     }else{
         unPinScreen();
     }
@@ -1085,6 +1086,19 @@ function sendToServer(msg) {
     socket.send(msgJSON);
 }
 
+function keepAlive() {  
+    sendToServer({
+    from: username,
+    type: 'keepAlive',
+    data: {
+        time: getTime(),
+        },
+    }); 
+	setTimeout(keepAlive, 5000)
+}
+
+setTimeout(keepAlive, 5000)
+ 
 //------------------util function------------------------------
 function log(message) {
     console.log(message);

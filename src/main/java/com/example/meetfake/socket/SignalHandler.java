@@ -347,9 +347,6 @@ public class SignalHandler extends TextWebSocketHandler {
 		case MSG_TYPE_LEAVE:
 			sessionIdToRoomMap.remove(session.getId());
 			break;
-
-		default:
-			logger.debug("[ws] Type of the received message {} is undefined!", message.getType());
 		}
 	}
 

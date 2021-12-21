@@ -136,4 +136,8 @@ $(function(){
     $(window).on('load', function () {
         $("#preloder").delay(200).fadeOut("slow");
      });
+    function disposeLoader(){
+                $("#preloder").delay(200).fadeOut("slow");
+    }
+    setTimeout(disposeLoader,5000);
 });
